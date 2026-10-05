@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VenusOS — Twój własny system</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background:
+        radial-gradient(circle at 15% 10%, #17245a 0%, transparent 32%),
+        radial-gradient(circle at 85% 20%, #35175f 0%, transparent 30%),
+        #05060d;
+    color: #fff;
+    overflow-x: hidden;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: .25;
+    background-image:
+        linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+    background-size: 45px 45px;
+}
+
+/* NAVBAR */
+
+nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 100;
+    padding: 15px 30px;
+    background: rgba(5,6,13,.72);
+    backdrop-filter: blur(18px);
+    border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+.nav-content {
+    max-width: 1150px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 21px;
+    font-weight: 800;
+}
+
+.logo-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg,#5b9cff,#9b6cff);
+    box-shadow: 0 0 30px rgba(108,125,255,.4);
+    font-size: 21px;
+}
+
+.links {
+    display: flex;
+    gap: 28px;
+}
+
+.links a {
+    color: #aeb5cf;
+    text-decoration: none;
+    font-size: 14px;
+    transition: .2s;
+}
+
+.links a:hover {
+    color: white;
+}
+
+/* HERO */
+
+.hero {
+    min-height: 100vh;
+    max-width: 1150px;
+    margin: auto;
+    padding: 150px 25px 80px;
+    display: grid;
+    grid-template-columns: 1.1fr .9fr;
+    align-items: center;
+    gap: 60px;
+}
+
+.badge {
+    display: inline-block;
+    padding: 8px 13px;
+    border-radius: 999px;
+    background: rgba(115,140,255,.1);
+    border: 1px solid rgba(135,155,255,.2);
+    color: #b8c5ff;
+    font-size: 13px;
+}
+
+.hero h1 {
+    font-size: clamp(55px, 8vw, 90px);
+    line-height: .95;
+    letter-spacing: -5px;
+    margin: 22px 0;
+}
+
+.gradient {
+    background: linear-gradient(90deg,#ffffff,#8eb5ff,#ae7dff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.hero p {
+    max-width: 650px;
+    color: #aeb5ca;
+    font-size: 19px;
+    line-height: 1.7;
+}
+
+.buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 13px;
+    margin-top: 30px;
+}
+
+.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 20px;
+    border-radius: 13px;
+    text-decoration: none;
+    font-weight: 700;
+    transition: .2s;
+}
+
+.button:hover {
+    transform: translateY(-3px);
+}
+
+.primary {
+    color: white;
+    background: linear-gradient(135deg,#5d9cff,#8a69ff);
+    box-shadow: 0 15px 40px rgba(99,115,255,.25);
+}
+
+.secondary {
+    color: white;
+    border: 1px solid rgba(255,255,255,.12);
+    background: rgba(255,255,255,.045);
+}
+
+/* PLANET */
+
+.planet-area {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.orbit {
+    width: 360px;
+    height: 360px;
+    border-radius: 50%;
+    border: 1px solid rgba(137,158,255,.25);
+    position: relative;
+    box-shadow: 0 0 100px rgba(101,115,255,.14);
+    animation: float 5s ease-in-out infinite;
+}
+
+.orbit::before {
+    content: "";
+    position: absolute;
+    inset: 35px;
+    border-radius: 50%;
+    border: 1px solid rgba(104,222,255,.2);
+    transform: rotate(35deg) scaleX(1.35);
+}
+
+.planet {
+    position: absolute;
+    inset: 85px;
+    border-radius: 50%;
+    background:
+        radial-gradient(circle at 30% 25%,#c9dcff,#758bff 38%,#7249bd 70%,#18132d);
+    box-shadow:
+        0 0 70px rgba(110,126,255,.55),
+        inset -25px -20px 45px rgba(0,0,0,.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 70px;
+    font-weight: 900;
+}
+
+@keyframes float {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+}
+
+/* SECTIONS */
+
+section {
+    max-width: 1150px;
+    margin: auto;
+    padding: 90px 25px;
+}
+
+.section-label {
+    color: #91aaff;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 800;
+}
+
+section h2 {
+    font-size: 42px;
+    margin: 10px 0;
+}
+
+.section-description {
+    color: #9ea7c0;
+    max-width: 680px;
+    line-height: 1.7;
+}
+
+/* FEATURES */
+
+.features {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 17px;
+    margin-top: 35px;
+}
+
+.card {
+    padding: 25px;
+    border-radius: 21px;
+    border: 1px solid rgba(255,255,255,.09);
+    background: linear-gradient(
+        145deg,
+        rgba(20,26,47,.8),
+        rgba(9,12,23,.8)
+    );
+    transition: .25s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(130,153,255,.3);
+    box-shadow: 0 20px 60px rgba(0,0,0,.2);
+}
+
+.card-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(112,140,255,.12);
+    font-size: 21px;
+    margin-bottom: 18px;
+}
+
+.card h3 {
+    margin-bottom: 8px;
+}
+
+.card p {
+    color: #9ea7bd;
+    font-size: 14px;
+    line-height: 1.65;
+}
+
+/* DOWNLOAD */
+
+.download-boxes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 35px;
+}
+
+.download-card {
+    position: relative;
+    overflow: hidden;
+    padding: 32px;
+    border-radius: 25px;
+    border: 1px solid rgba(255,255,255,.1);
+    background: linear-gradient(145deg,#121a31,#090c17);
+}
+
+.download-card::after {
+    content: "";
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    right: -90px;
+    top: -90px;
+    border-radius: 50%;
+    background: rgba(110,130,255,.2);
+    filter: blur(45px);
+}
+
+.download-card h3 {
+    font-size: 25px;
+    margin: 12px 0;
+}
+
+.download-card p {
+    color: #a4acc2;
+    line-height: 1.65;
+    margin-bottom: 25px;
+}
+
+.tag {
+    display: inline-block;
+    padding: 6px 9px;
+    border-radius: 8px;
+    background: rgba(255,255,255,.06);
+    color: #c3cbed;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.soon {
+    opacity: .72;
+}
+
+/* ABOUT */
+
+.about-box {
+    margin-top: 30px;
+    padding: 35px;
+    border-radius: 25px;
+    border: 1px solid rgba(255,255,255,.09);
+    background:
+        radial-gradient(circle at 80% 20%,rgba(130,100,255,.15),transparent 35%),
+        rgba(14,18,32,.8);
+}
+
+.about-box p {
+    color: #aab2c8;
+    line-height: 1.8;
+}
+
+/* FOOTER */
+
+footer {
+    margin-top: 50px;
+    padding: 35px 20px;
+    text-align: center;
+    border-top: 1px solid rgba(255,255,255,.08);
+    color: #777f98;
+    font-size: 13px;
+}
+
+/* MOBILE */
+
+@media(max-width:850px) {
+
+    .links {
+        display: none;
+    }
+
+    .hero {
+        grid-template-columns: 1fr;
+        text-align: center;
+        padding-top: 125px;
+    }
+
+    .hero p {
+        margin: auto;
+    }
+
+    .buttons {
+        justify-content: center;
+    }
+
+    .planet-area {
+        order: -1;
+    }
+
+    .orbit {
+        width: 270px;
+        height: 270px;
+    }
+
+    .planet {
+        inset: 65px;
+        font-size: 52px;
+    }
+
+    .features {
+        grid-template-columns: 1fr;
+    }
+
+    .download-boxes {
+        grid-template-columns: 1fr;
+    }
+
+    section h2 {
+        font-size: 34px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<nav>
+    <div class="nav-content">
+
+        <a href="#" class="logo">
+            <span class="logo-icon">V</span>
+            VenusOS
+        </a>
+
+        <div class="links">
+            <a href="#funkcje">Funkcje</a>
+            <a href="#pobieranie">Pobieranie</a>
+            <a href="#projekt">Projekt</a>
+            <a href="https://github.com/" target="_blank">GitHub ↗</a>
+        </div>
+
+    </div>
+</nav>
+
+
+<main>
+
+<section class="hero">
+
+    <div>
+
+        <span class="badge">✦ Nowa generacja VenusOS</span>
+
+        <h1>
+            Twój komputer.<br>
+            <span class="gradient">Twoje zasady.</span>
+        </h1>
+
+        <p>
+            VenusOS to nowoczesny wirtualny komputer dla Windows,
+            własny ekosystem aplikacji oraz długoterminowy projekt
+            prawdziwego systemu operacyjnego.
+        </p>
+
+        <div class="buttons">
+
+            <a href="#pobieranie" class="button primary">
+                ⬇ Pobierz VenusOS
+            </a>
+
+            <a href="#funkcje" class="button secondary">
+                Poznaj VenusOS
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="planet-area">
+
+        <div class="orbit">
+
+            <div class="planet">
+                V
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section id="funkcje">
+
+    <span class="section-label">Ekosystem</span>
+
+    <h2>Nie jest to zwykła aplikacja.</h2>
+
+    <p class="section-description">
+        VenusOS posiada własne aplikacje, pliki, zabezpieczenia
+        i środowisko przypominające prawdziwy komputer.
+    </p>
+
+
+    <div class="features">
+
+        <div class="card">
+            <div class="card-icon">🖥️</div>
+            <h3>Wirtualny pulpit</h3>
+            <p>
+                Własne okna, pasek zadań, menu Start i środowisko
+                stworzone specjalnie dla VenusOS.
+            </p>
+        </div>
+
+
+        <div class="card">
+            <div class="card-icon">🌐</div>
+            <h3>VenusEdge</h3>
+            <p>
+                Integracja z Microsoft Edge i możliwość korzystania
+                z przeglądarki bez opuszczania środowiska VenusOS.
+            </p>
+        </div>
+
+
+        <div class="card">
+            <div class="card-icon">🛡️</div>
+            <h3>VenusDefender</h3>
+            <p>
+                Wirtualny system bezpieczeństwa zaprojektowany
+                specjalnie dla środowiska VenusOS.
+            </p>
+        </div>
+
+
+        <div class="card">
+            <div class="card-icon">📁</div>
+            <h3>Venus Files</h3>
+            <p>
+                Własne pliki, foldery, aplikacje oraz wirtualny
+                system przechowywania danych.
+            </p>
+        </div>
+
+
+        <div class="card">
+            <div class="card-icon">⚙️</div>
+            <h3>Ustawienia</h3>
+            <p>
+                Zarządzaj wyglądem, urządzeniami i funkcjami
+                VenusOS z jednego miejsca.
+            </p>
+        </div>
+
+
+        <div class="card">
+            <div class="card-icon">🚀</div>
+            <h3>Przyszłość</h3>
+            <p>
+                Projekt będzie rozwijany również w kierunku
+                prawdziwego, bootowalnego systemu operacyjnego.
+            </p>
+        </div>
+
+    </div>
+
+</section>
+
+
+<section id="pobieranie">
+
+    <span class="section-label">Pobieranie</span>
+
+    <h2>Wybierz swoją wersję.</h2>
+
+    <p class="section-description">
+        Możesz korzystać z VenusOS jako wirtualnego komputera
+        w Windows albo poczekać na prawdziwy system operacyjny.
+    </p>
+
+
+    <div class="download-boxes">
+
+
+        <div class="download-card">
+
+            <span class="tag">
+                WINDOWS • VIRTUAL
+            </span>
+
+            <h3>🪟 VenusOS Virtual</h3>
+
+            <p>
+                Wirtualna wersja VenusOS działająca bezpośrednio
+                w systemie Windows jako aplikacja.
+            </p>
+
+            <!-- TU WSTAWISZ LINK DO NAJNOWSZEGO EXE -->
+            <a
+                href="#"
+                class="button primary"
+            >
+                ⬇ Pobierz dla Windows (Virtual)
+            </a>
+
+        </div>
+
+
+        <div class="download-card soon">
+
+            <span class="tag">
+                SYSTEM OPERACYJNY
+            </span>
+
+            <h3>💿 VenusOS</h3>
+
+            <p>
+                Prawdziwy, bootowalny system operacyjny VenusOS.
+                Ta wersja jest obecnie w przygotowaniu.
+            </p>
+
+            <span class="button secondary">
+                Wkrótce
+            </span>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+<section id="projekt">
+
+    <span class="section-label">O projekcie</span>
+
+    <h2>Jeden projekt. Dwie drogi.</h2>
+
+    <div class="about-box">
+
+        <p>
+            VenusOS rozwija się w dwóch kierunkach.
+            Pierwszy to VenusOS Virtual — wirtualny komputer
+            uruchamiany w Windows. Drugi to długoterminowy
+            projekt prawdziwego systemu operacyjnego,
+            który będzie mógł uruchamiać się niezależnie od Windows.
+        </p>
+
+    </div>
+
+</section>
+
+</main>
+
+
+<footer>
+    VenusOS © 2026 · Projekt rozwijany niezależnie
+</footer>
+
+
+<script>
+const cards = document.querySelectorAll(".card, .download-card");
+
+const observer = new IntersectionObserver(
+    entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = "1";
+                entry.target.style.transform = "translateY(0)";
+            }
+        });
+    },
+    { threshold: 0.12 }
+);
+
+cards.forEach(card => {
+    card.style.opacity = "0";
+    card.style.transform = "translateY(20px)";
+    card.style.transition = "opacity .6s ease, transform .6s ease";
+    observer.observe(card);
+});
+</script>
+
+</body>
+</html>
